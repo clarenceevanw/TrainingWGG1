@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold mb-2 text-center">Level Akses</h1>
         <p class="text-gray-400 text-sm text-center mb-6">Lengkapi data pegawai di bawah ini</p>
 
-        <form action="{{ route('pegawai.updateAkses') }}" method="POST" class="space-y-5 form-create">
+        <form class="space-y-5 form-create">
             @csrf
             @method('PUT')
             <div>
@@ -92,7 +92,6 @@
 
         simpanButton.addEventListener('click', function (e) {
             e.preventDefault();
-            const form = document.querySelector('.form-create');
             Swal.fire({
                 title: 'Yakin ingin edit?',
                 text: "Data pegawai akan diedit di sistem.",
@@ -111,11 +110,94 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    submitFormAjax();
                 }
             });
         });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Yakin ingin edit?',
+                    text: "Data pegawai akan diedit di sistem.",
+                    icon: 'warning',
+                    background: '#131420',
+                    color: '#ffffff',
+                    showCancelButton: true,
+                    confirmButtonColor: '#aefcf3',
+                    cancelButtonColor: '#444',
+                    confirmButtonText: 'Ya, simpan!',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        popup: 'rounded-lg',
+                        confirmButton: 'text-black font-semibold',
+                        cancelButton: 'text-white'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        submitFormAjax();
+                    }
+                });
+            }
+        })
     });
+
+    async function submitFormAjax(){
+        const form = document.querySelector('.form-create');
+        const formData = new FormData(form);
+        formData.append('_method', 'PUT');
+        
+        try{
+            const res = await fetch('{{ route("pegawai.updateAkses") }}', {
+                method : 'POST',
+                body : formData
+            });   
+            const data = await res.json();
+            if (data.success){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.success,
+                    background: '#131420',
+                    color: '#ffffff',
+                    confirmButtonColor: '#aefcf3',
+                    customClass: {
+                        popup: 'rounded-lg',
+                        confirmButton: 'text-black font-semibold'
+                    }
+                }).then(() => {
+                    window.location.href = '{{ route("pegawai.infoAkses") }}';
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.error,
+                    background: '#131420',
+                    color: '#ffffff',
+                    confirmButtonColor: '#aefcf3',
+                    customClass: {
+                        popup: 'rounded-lg',
+                        confirmButton: 'text-black font-semibold'
+                    }
+                });
+            }
+        } catch(error){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                background: '#131420',
+                color: '#ffffff',
+                confirmButtonColor: '#aefcf3',
+                customClass: {
+                    popup: 'rounded-lg',
+                    confirmButton: 'text-black font-semibold'
+                }
+            });
+        }
+    }
 </script>
 @endsection
 
