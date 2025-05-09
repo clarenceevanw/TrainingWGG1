@@ -11,6 +11,10 @@ class LoginController extends Controller
 {
     public function showLogin()
     {
+        if (session('pegawai_id')) {
+            return redirect()->route('pegawai.info')->with('success', 'Anda sudah login.');
+        }
+        
         return view('auth.login', [
             'title' => 'Login',
         ]);
