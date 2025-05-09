@@ -46,6 +46,8 @@ class Pegawai extends Model
             'email.unique' => 'Email sudah terdaftar.',
             'division.required' => 'Divisi pegawai harus diisi.',
             'division.exists' => 'Divisi tidak valid.',
+            'level_akses.required' => 'Level akses pegawai harus diisi.',
+            'level_akses.exists' => 'Level akses tidak valid.',
         ];
     }
 
